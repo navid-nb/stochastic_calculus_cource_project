@@ -1,0 +1,967 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\setlist{nosep}
+
+\title{Fixed-Income Securities: Concise Summary}
+\author{Navid}
+\date{\today}
+
+\begin{document}
+
+\setlength{\parindent}{0pt}
+
+\maketitle
+\tableofcontents
+
+\section*{List of Symbols}
+\vspace{0.5em}
+
+\begin{tabular}{p{3cm}p{11cm}}
+\hline
+\textbf{Notation} & \textbf{Description} \\
+\hline
+$F_t(T_1, T_2)$ & Forward rate at time $t$ for operations between $T_1$ and $T_2$ (first argument is dropped when $t = 0$) \\
+$f(t, T)$ & Instantaneous forward rate at time $t$ for operations at time $T$ \\
+$\Phi(\cdot)$ & Standard normal cumulative distribution function (cdf) \\
+$i_t(T)$ & Money market (simple) rate at time $t$ with horizon $T$ \\
+$K_f$ & Forward swap rate \\
+$\chi^2(x, y, z)$ & Cumulative distribution function of the non-central chi-square law with $y$ degrees of freedom and centrality parameter $z$ evaluated at $x$ \\
+$P(t, T)$ & Discount factor, zero-coupon bond price \\
+$r_t$ & Instantaneous risk-free rate (stochastic process) \\
+$\tau$ & Interest rate option or swap periodicity, or Nelson-Siegel-Svensson curvature parameter \\
+$\theta$ & Nelson-Siegel-Svensson curvature parameter \\
+$W_t$ & Brownian motion under the physical measure \\
+$zcy(t, T)$ & Zero-coupon yield \\
+$Z_t$ & Brownian motion under the Equivalent Martingale Measure \\
+\hline
+\end{tabular}
+\vspace{0.5em}
+
+%-------------------
+\section{Fundamentals}
+
+\textbf{Compounding}
+\vspace{0.5em}
+
+Discrete: $\prod_{j=0}^{n-1} (1 + r_j)$ \quad [$r_j$ = spot rate at beginning of period $j$]
+
+Continuous: $\exp\left(\int_0^T r_u \, du\right)$ \quad [$\{r_u\}_{u \geq 0}$ = stochastic process for instantaneous risk-free rate]
+
+\vspace{0.5em}
+
+\textbf{Discounting}
+\vspace{0.5em}
+
+Discrete: $\prod_{j=0}^{n-1} (1 + r_j)^{-1}$ \quad [discount one unit from time $T$ to current time]
+
+Continuous: $\exp\left(-\int_0^T r_u \, du\right)$
+
+\vspace{0.5em}
+
+% \textbf{Money Market}
+% \vspace{0.5em}
+
+% Compounded value of one unit: $1 + i(T)T$ \quad [$i(T)$ = simple rate for horizon $T$]
+
+% \vspace{0.5em}
+
+\textbf{Discount Factor (Zero-Coupon Bond Price)}
+\vspace{0.5em}
+
+
+$$P(t,T) = \mathbb{E}_t^Q\left[\exp\left(-\int_t^T r_u \, du\right)\right]$$
+
+
+Properties: $0 < P(t,T) < 1$, decreasing and convex in $T$
+
+\vspace{0.5em}
+
+\textbf{Zero-Coupon Yield (spot rate)}
+\vspace{0.5em}
+
+$$zcy(t,T) = -\frac{1}{T-t} \ln P(t,T)$$
+
+\vspace{0.5em}
+
+\textbf{Forward Rates}
+\vspace{0.5em}
+
+for Simple rates: $F(T_1, T_2) = \frac{1}{T_2 - T_1}\left(\frac{1 + i(T_2)T_2}{1 + i(T_1)T_1} - 1\right)$
+
+for continous rates: $F(T_1, T_2) = \frac{1}{T_2 - T_1} \ln\frac{P(0,T_1)}{P(0,T_2)}$
+
+As function of zero-coupon yields: $F(T_1, T_2) = \frac{zcy(0,T_2)T_2 - zcy(0,T_1)T_1}{T_2 - T_1}$
+
+\vspace{0.5em}
+
+\textbf{Instantaneous Forward Rate}
+\vspace{0.5em}
+
+Definition: $f(T) = \lim_{T_2 \to T} F(T, T_2) = -\frac{\partial \ln P(0,T)}{\partial T}$
+
+Relation to discount factor: $P(0,T) = \exp\left(-\int_0^T f(u) \, du\right)$
+
+\vspace{0.5em}
+
+\textbf{Money Market Instruments} (use simple, proportional rate.)
+\vspace{0.5em}
+
+Short maturity (below 1 year), no interim payments. eg: Treasury bills, commercial papers, banker's acceptances, municipal notes.
+
+\vspace{0.3em}
+
+Discount basis: $P = M(1 - i(T)T)$, yield: $y_d = \frac{M-P}{MT}$ [used in North America, UK, EU]
+
+Money-market basis: $P = \frac{M}{1 + i(T)T}$, yield: $y_m = \frac{M-P}{PT}$ [used in Japan]
+
+Difference: money-market basis accounts for time value of interests, more favorable to lender than discount basis.
+
+\vspace{0.3em}
+
+Repurchase agreements (repos): sell securities with commitment to repurchase. Financing rate implied by sell/repurchase price difference. Close to central bank overnight rate, affected by liquidity and collateral demand.
+
+\vspace{0.5em}
+
+\textbf{Bonds}
+\vspace{0.5em}
+
+Zero-coupon bond (STRIPS): Value $P(0,T)$ for unit face value at maturity $T$.
+
+Coupon-bearing bond (par issuance, semi-annual payments): 
+$$\sum_{j=1}^{2T} \frac{c}{2}MP(0,\frac{j}{2}) + MP(0,T)$$
+[$c$ = coupon rate, $M$ = face value, $T$ = maturity]
+
+Re-evaluation between coupon dates accounts for accrued interest.
+
+Embedded options: callable (can be redeemed by the issuer at pre-specified price/period), convertible (can be converted by the holder into a pre-specified fraction 
+of equity, during a given period.), callable convertible (combines call and conversion features), putable (can be redeemed by the holder at pre-specified price/period).
+
+\vspace{0.5em}
+
+\textbf{Forward Rate Agreement (FRA)}
+\vspace{0.5em}
+
+OTC, notional $M$, effective date $T_1$, termination date $T_2$, reference rate $i_{t}$, fixed rate $R$.
+
+Buyer cash flow at $T_1$: $\frac{M(T_2 - T_1)(i_{T_1}(T_2) - R)}{1 + i_{T_1}(T_2)(T_2 - T_1)}$ | seller cash flow is negative of buyer's.
+
+If initial value nil: $R = F(T_1, T_2)$
+
+No principal exchange. Flexible hedging instrument. Buyer can borrow at rate $R$ for period $[T_1, T_2]$.
+
+\vspace{0.5em}
+
+\textbf{FRA Futures}
+\vspace{0.5em}
+
+Montreal Exchange - CORRA futures (1-month, 3-month maturity): quoted as $100 - R$ where $R$ = compounded daily CORRA. Contract size: $\$2500 \times (100 - R)$ per contract [\$25 per basis point | 1 bp =0.0001].
+
+CME group - SOFR futures (1-month, 3-month maturity): similar to CORRA. Available up to 10 years ahead.
+
+Hedging by selling $h$ futures (3-month, $M$ million loan at variable rate): $h = \frac{M \text{ mil.} \times 1 \text{ bp} \times 91/365}{25} \approx M$
+
+\vspace{0.5em}
+
+\textbf{Treasury Bill Futures}
+\vspace{0.5em}
+
+CME group: quoted as $100 - R$ where $R$ = yield on 13-week T-bill. Contract size: $\$2500 \times (100 - R)$ [\$25 per basis point]. Limited to one year of traded reference quarters.
+
+\vspace{0.5em}
+
+\textbf{Treasury Bond Futures}
+\vspace{0.5em}
+
+\textit{Underlying and Delivery:} Montreal Exchange - 4 maturities (2.5, 10, 20, 30 years). Government bond with \$100,000 nominal and 6\% coupon. Conversion factor (CF) adjusts delivered bond yields to 6\%. Physical delivery.
+
+\textit{Delivery Options:} 
+- Timing option: seller delivers any day in delivery month
+- End-of-month option: few business days between last trading day and delivery date  
+- Quality option: seller chooses bond from pool of deliverable bonds
+
+\textit{Invoice Price:} 
+$$IP_t = H_{t,T} \times CF$$
+where $H_{t,T}$ = futures price at sale, $CF$ = conversion factor for delivered bond
+
+\textit{Forward Price (Cash \& Carry):}
+$$FP_{t,T} = (SP_t + AC_t)\left(1 + r\frac{T-t}{365}\right) - AC_T - \frac{c}{2}\left(1 + r\frac{T-s}{365}\right)$$
+where $SP_t$ = spot price at time $t$, $AC_t$ = accrued interest at time $t$, $AC_T$ = accrued interest at delivery $T$, $r$ = implicit financing rate, $c$ = coupon, $s$ = last coupon date before $T$
+
+\textit{Basis After Carry:}
+$$BAC_t = FP_{t,T} - IP_t$$
+
+Cheapest-to-deliver (CTD) bond: minimize $BAC_t$ at time $t$ ( Maximize $r^*$ to find CTD. Higher $r^*$ favors seller over holding bond.)
+
+\textit{Implied Repo Rate:}
+$$r^* = \frac{H_{t,T} \times CF - SP_t + AC_T - AC_t - c/2}{(SP_t + AC_t)\frac{T-t}{365} - \frac{c}{2}\frac{T-s}{365}}$$
+
+\vspace{0.5em}
+
+\textbf{Options on Bond Futures}
+\vspace{0.5em}
+
+American options written on bond futures (Montreal: 2-year, 5-year, 10-year). Option maturities = 3 months preceding futures maturity. Weekly options also available.
+
+\vspace{0.5em}
+
+\textbf{Interest Rate Options (Caps \& Floors)}
+\vspace{0.5em}
+
+OTC derivatives. \textit{Cap} = chain of European call options ("caplets"). \textit{Floor} = chain of European put options ("floorlets").
+
+Contract: notional $M$, reference rate $i_t(\cdot)$, strike $K$, maturity $T$, settlement dates $t_1, t_2, \ldots, t_n = T$.
+
+Period: $\tau = t_j - t_{j-1}$ (typically quarterly)
+
+\textit{Caplet payoff} at $t_j$ (j=1,...,n): 
+$$M\tau(i_{t_{j-1}}(t_j) - K)^+$$
+
+This is payoff of put on $P(t_{j-1}, t_j)$ with: strike $K' = \frac{1}{1 + K\tau}$, nominal $M' = M(1 + K\tau)$, maturity $t_{j-1}$
+
+$$\text{Cap}(M, K) = \sum_{j=\alpha+1}^{n} M' \text{Put}(P(t_{j-1}, t_j), K')$$
+
+$$\text{Floor}(M, K) = \sum_{j=\alpha+1}^{n} M' \text{Call}(P(t_{j-1}, t_j), K')$$
+
+where $t_\alpha$ = first reference rate reset date, $t_{\alpha+1}$ = first settlement date.
+
+\vspace{0.5em}
+
+\textbf{Interest Rate Swaps}
+\vspace{0.5em}
+
+\textit{Collar:} Buy cap at $K_2$, sell floor at $K_1$ (where $K_1 < K_2$). Net position each quarter $t_j$:
+$$-M\tau i_{t_{j-1}}(t_j) + M\tau(i_{t_{j-1}}(t_j) - K_2)^+ - M\tau(K_1 - i_{t_{j-1}}(t_j))^+$$
+
+When $K_1 = K_2 = K$, collar becomes \textit{interest rate swap}. No-arbitrage:
+$$\text{Cap}(M, i, K) - \text{Floor}(M, i, K) = \text{Payer swap}(M, i, K)$$
+
+$$\text{Floor}(M, i, K) - \text{Cap}(M, i, K) = \text{Receiver swap}(M, i, K)$$
+
+\textit{Payer swap} (fixed rate payer): pays $K$ per period, receives floating $i_{t_{j-1}}(t_j)$
+$$\text{Payer swap}(M, i, K) = M\tau \sum_{j=\alpha+1}^{n} P(0, t_j)(F(t_{j-1}, t_j) - K)$$
+
+where $F(t_{j-1}, t_j) = \frac{1}{\tau}\left(\frac{P(0,t_{j-1})}{P(0,t_j)} - 1\right)$ = simply compounded forward rate
+
+Simplified form:
+$$\text{Payer swap}(M, i, K) = M(P(0, t_\alpha) - P(0, t_n)) - M\tau K\sum_{j=\alpha+1}^{n} P(0, t_j)$$
+
+\textit{Receiver swap} (fixed rate receiver): receives $K$ per period, pays floating
+$$\text{Receiver swap}(M, i, K) = M(P(0, t_n) - P(0, t_\alpha)) + M\tau K\sum_{j=\alpha+1}^{n} P(0, t_j)$$
+
+\textit{Forward swap rate}: Fixed rate for which payer and receiver swaps have zero value
+$$K_f = \frac{P(0, t_\alpha) - P(0, t_n)}{\tau \sum_{j=\alpha+1}^{n} P(0, t_j)}$$
+
+\vspace{0.5em}
+
+\textbf{Swaptions}
+\vspace{0.5em}
+
+European option on interest rate swap. \textit{Payer swaption}: right to enter payer swap. \textit{Receiver swaption}: right to enter receiver swap. Swaption maturity $= t_\alpha$ (swap's first reset date). Tenor $= t_n - t_\alpha$.
+
+Payer swaption payoff:
+$$M\tau \sum_{j=\alpha+1}^{n} P(t_\alpha, t_j)(F_{t_\alpha}(t_{j-1}, t_j) - K)^+$$
+
+Thus, a swaption can be viewed as an option on a coupon-bearing bond.
+
+Compared to caps/floors: swaption value $<$ cap/floor value since:
+$$\left(\sum_{j=\alpha+1}^{n} P(t_\alpha, t_j)(F_{t_\alpha}(t_{j-1}, t_j) - K)\right)^+ \leq \sum_{j=\alpha+1}^{n} P(t_\alpha, t_j)(F_{t_\alpha}(t_{j-1}, t_j) - K)^+$$
+
+The positive part cannot be "pushed inside" the sum.
+
+\vspace{0.5em}
+
+note: January (31), February (28), March (31), April (30), May (31), June (30), July (31), August (31), September (30), October (31), November (30), December (31)
+%-------------------
+\section{Yield Curve Smoothing}
+
+\subsection{Money Market to Zero-Coupon Bonds}
+
+Money market instruments quoted on discount basis. For $t$-maturity money market rate $R_M(t)$ (day-count: Actual/365 Canada, Actual/360 US):
+$$P(0,t) = 1 - R_M(t) \cdot t$$
+
+\subsection{Bootstrapping Method}
+
+Long-term swap/bond rates $R_S(T)$ (bullet redemption, semi-annual coupons):
+$$100 = \sum_{i=1}^{T} \frac{100 \times R_S(T)}{2} P\left(0, \frac{i}{2}\right) + 100 \times P(0, T)$$
+
+Solve for discount factors $P(0,i)$ recursively:
+
+\textit{Initial:} $P(0, 1/2)$ and $P(0,1)$ from money market.
+
+\textit{Next:} From 2-year OIS rate/Bond yield $R_S(2)$, Solve for $P(0,2)$. for $P(0,1.5)$, linearly interpolate between $P(0,1)$ and $P(0,2)$.
+then turn the Ps into ZCYs.
+
+\subsection{Nelson-Siegel-Svensson Smoothing}
+
+$$\text{zcy}_{\text{NSS}}(T) = a + b\left(\frac{1 - e^{-T/\tau}}{T/\tau}\right) + c\left(\frac{1 - e^{-T/\tau}}{T/\tau} - e^{-T/\tau}\right) + d\left(\frac{1 - e^{-T/\theta}}{T/\theta} - e^{-T/\theta}\right)$$
+
+Parameters: $a$ = long-end level; $b$ = short-end/slope; $c, d$ = two curvatures; $\tau, \theta$ = maturity of two curvatures.
+
+$$\text{Instantaneous forward rate:} f_{\text{NSS}}(T) = a + \frac{e^{-T/\tau}}{T}(b\tau + cT) + \frac{e^{-T/\theta}}{T}dT$$
+
+\textbf{Fitting:} set  $w_i= 1$,for no weighting. $w_i = \frac{1/t_i}{\sum_{k=1}^{n} 1/k}$ (short-end emphasis) or $w_i = \frac{i}{\sum_{k=1}^{n} k}$ (long-end emphasis).
+$$\min_{a,b,c,d,\tau,\theta} \sum_{i=1}^{n} (\text{zcy}_{\text{NSS}}(t_i) - \text{zcy}(t_i))^2 w_i^2$$
+
+
+
+
+
+
+
+%-------------------
+
+%-------------------
+\section{One-factor Models}
+
+\subsection{Vasicek Model (equilibrium model)}
+
+\textit{EMM dynamics of short rate:}
+$$dr_t = \kappa(\theta - r_t)dt + \sigma dW_t$$
+
+$\kappa$ = speed of mean reversion; $\theta$ = long-run mean; $\sigma$ = volatility. all must be positive.
+Negative rates possible but unlikely with reasonable parameters.
+
+$$r_T = r_t e^{-\kappa(T-t)} + \theta(1 - e^{-\kappa(T-t)}) + \sigma \int_t^T e^{-\kappa(T-u)} dW_u$$
+
+$$\mathbb{E}_t[r_T] = \theta + (r_t - \theta)e^{-\kappa(T-t)}$$
+
+$$\text{Var}_t[r_T] = \frac{\sigma^2}{2\kappa}(1 - e^{-2\kappa(T-t)})$$
+
+\textit{Physical measure:} 
+$$dr_t = \kappa^P(\theta^P - r_t)dt + \sigma dZ_t$$
+
+where $\kappa^P = \kappa - \sigma\lambda_1$ and $\theta^P = \frac{\kappa\theta + \sigma\lambda_0}{\kappa - \sigma\lambda_1}$.
+
+Stationarity requires: $\lambda_1 < \kappa/\sigma$.
+
+$$P_{vk}(t,T) = a_{vk}(t,T)\exp[-b_{vk}(t,T)r_t]$$
+$$\text{zcy}_k(t,T) = -\frac{1}{T-t}\ln[a_{vk}(t,T)) - b_{vk}(t,T)r_t]$$
+
+where 
+$$a_{vk}(t,T) = \exp\left[\left(\theta - \frac{\sigma^2}{2\kappa^2}\right)(b_{vk}(t,T) - T + t) - \frac{\sigma^2}{4\kappa}b_{vk}(t,T)^2\right]$$
+
+$$b_{vk}(t,T) = \frac{1 - e^{-\kappa(T-t)}}{\kappa}$$
+
+\textit{Option on zero-coupon bond:} European call on nominal \$1 zero-coupon bond (maturity $T$) with strike $K$ and option maturity $T_{\text{call}}$:
+$$\text{call}_{vk}(P,K) = P_{vk}(0,T)\Phi(h) - KP_{vk}(0,T_{\text{call}})\Phi(h - \sigma_p)$$
+
+$$h = \frac{\sigma_p}{2} + \frac{1}{\sigma_p}\ln\frac{P_{vk}(0,T)}{KP_{vk}(0,T_{\text{call}})}$$
+
+$$\sigma_p = \frac{\sigma}{\kappa}(1 - e^{-\kappa(T-T_{\text{call}})})\sqrt{\frac{1 - e^{-2\kappa(T_{\text{call}}-t)}}{2\kappa}}$$
+
+$$\text{put}_{vk}(P,K) = KP_{vk}(0,T_{\text{put}})\Phi(\sigma_p - h) - P_{vk}(0,T)\Phi(-h)$$
+
+Interpretation (Black-Scholes analogy): Bond value is log-normally distributed. $\sigma_p$ = volatility of zero-coupon bond returns; $\Phi(h)$ = call delta; $\Phi(h-\sigma_p)$ = probability (under EMM) call is exercised.
+
+\textit{Option on coupon bond:} Coupon bond replicates portfolio of zero-coupon bonds: $P_c(0,\{T_i\}) = \sum_{i=1}^{n} c_i P(0, T_i)$.
+
+European call (strike $K$, maturity $T_{\text{call}}$) terminal payoff: $(\sum_{i=1}^{n} c_i P(T_{\text{call}}, T_i) - K)^+$.
+
+\textit{Jamshidian decomposition:} Find critical short rate $r^*$ where coupon bond equals strike: $\sum_{i=1}^{n} c_i P(T_{\text{call}}, T_i, r^*) = K$. Then:
+$$\text{call}(P_c(0,\{T_i\}), K) = \sum_{i=1}^{n} c_i \, \text{call}(P(0, T_i), K_i)$$
+
+where $K_i = P(T_{\text{call}}, T_i, r^*)$.
+
+\textit{Swaptions:} Payer swaption: right to enter payer swap (fixed rate $K$, first reset $t_\alpha$, settlements $t_{\alpha+1}, ..., t_n$).
+
+Rewrite as pseudo-coupon bond: $c_i = K \tau$ for $i = \alpha+1, ..., n-1$; $c_n = 1 + K \tau$.
+
+Find $r^*$ (at-the-money): $\sum_{i=\alpha+1}^{n} c_i P(t_\alpha, t_i, r^*) = 1$.
+
+$$\text{payer swaption}(M, K, t_\alpha) = M \sum_{i=\alpha+1}^{n} c_i \, \text{put}(P(t_\alpha, t_i), K_i)$$
+
+$$\text{receiver swaption}(M, K, t_\alpha) = M \sum_{i=\alpha+1}^{n} c_i \, \text{call}(P(t_\alpha, t_i), K_i)$$
+
+where $K_i = P(t_\alpha, t_i, r^*)$. Use zero-coupon bond options to evaluate each term.
+
+\subsection{Cox-Ingersoll-Ross (CIR) Model (equilibrium model)}
+
+\textit{EMM dynamics:}
+$$dr_t = \kappa(\theta - r_t)dt + \sigma\sqrt{r_t}dW_t$$
+
+Parameters $\kappa, \theta, \sigma$ as in Vasicek. Key feature: \textbf{square-root process} ensures $r_t \geq 0$ if $r_0 \geq 0$ and Feller condition holds: $2\kappa\theta > \sigma^2$.
+
+Distribution: $r_t$ follows non-central chi-square (scaled). For simulation: $r_t = Y/b_t$ where $b_t = \frac{4\kappa}{\sigma^2(1-e^{-\kappa t})}$ and $Y \sim \chi^2_{\nu}(\lambda_c)$ non-central chi-square with $\nu = 4\kappa\theta/\sigma^2$ degrees of freedom and non-centrality $b_t r_0 e^{-\kappa t}$.
+
+\textit{Physical measure:} 
+$$dr_t = \kappa^P(\theta^P - r_t)dt + \sigma\sqrt{r_t}dZ_t$$
+
+where $\kappa^P = \kappa - \sigma\lambda$ and $\theta^P = \frac{\kappa\theta}{\kappa - \sigma\lambda}$. Stationarity: $\lambda < \kappa/\sigma$.
+
+\textit{Zero-coupon bond value (closed form):}
+$$P_{\text{cir}}(t,T) = a_{\text{cir}}(t,T)\exp[-b_{\text{cir}}(t,T)r_t]$$
+
+$$a_{\text{cir}}(t,T) = \left(\frac{2\gamma e^{\frac{\kappa + \gamma}{2}(T-t)}}{(\kappa + \gamma)(e^{\gamma(T-t)} - 1) + 2\gamma}\right)^{\frac{2\kappa\theta}{\sigma^2}}$$
+
+$$b_{\text{cir}}(t,T) = \frac{2(e^{\gamma(T-t)} - 1)}{(\kappa + \gamma)(e^{\gamma(T-t)} - 1) + 2\gamma}$$
+
+$$\gamma = \sqrt{\kappa^2 + 2\sigma^2}$$
+
+$$\text{zcy}(t,T) = -\frac{1}{T-t}[\ln(a_{\text{cir}}(t,T)) - b_{\text{cir}}(t,T)r_t]$$
+
+\textit{Option on zero-coupon bond (CIR):} European call with strike $K$ and maturity $T_{\text{call}}$:
+$$\text{call}_{\text{cir}}(P,K) = P_{\text{cir}}(0,T)\chi^2_\xi(\cdot) - KP_{\text{cir}}(0,T_{\text{call}})\chi^2_\psi(\cdot)$$
+
+where $\chi^2$ denotes non-central chi-square distribution.
+
+\subsection{Hull-White Model (arbitrage model)}
+
+$$dr_t = \kappa(\varphi(t) - r_t)dt + \sigma dW_t$$
+
+where $\varphi(t)$ (deterministic function of time) calibrates perfectly to the observed yield curve at $t=0$. 
+At $t=0$, model fits the yield curve exactly: $P_{\text{hw}}(0, T) = P^m(0,T)$ (observed prices).
+
+\textit{Zero-coupon bond value:} Same affine structure as Vasicek:
+$$P_{\text{hw}}(t,T) = a_{\text{hw}}(t,T)\exp[-b_{\text{hw}}(t,T)r_t]$$
+
+where $b_{\text{hw}}(t,T) = \frac{1 - e^{-\kappa(T-t)}}{\kappa}$ (identical to Vasicek) and 
+
+$$a_{\text{hw}}(t,T) = \frac{P^m(0,T)}{P^m(0,t)}\exp[b_{\text{hw}}(t,T)f^m(0,t) - \frac{\sigma^2}{4\kappa}b_{\text{hw}}(t,T)^2(1 - e^{-2\kappa t})]$$
+
+All other formulas follow Vasicek structure.
+
+\subsection{Brigo-Mercurio Model (arbitrage model)}
+
+\textit{Shifted CIR model:} Adds deterministic shift to CIR to fit yield curve to fit at $t=0$:
+$$dx_t = \kappa(\theta - x_t)dt + \sigma\sqrt{x_t}dW_t$$
+$$r_t = x_t + \varphi(t)$$
+
+
+Model fits yield curve when: $\varphi(t) = f^m(0,t) - f^{cir}(0,t)$
+
+\textbf{Warning:} Unlike CIR, Brigo-Mercurio does \textbf{not guarantee positive rates}. positivity is gauranteed if $\varphi(t) > 0$ for all $t$;
+
+\textit{Zero-coupon bond value:}
+$$P_{\text{bm}}(t,T) = a_{\text{bm}}(t,T)\exp[-b_{\text{bm}}(t,T)x_t]$$
+
+where $b_{\text{bm}}(t,T) = b_{\text{cir}}(t,T)$ and $$a_{\text{bm}}(t,T) = \frac{P^m(0,T)}{P^m(0,t)}\frac{a_{\text{cir}}(0,t)e^{-b_{\text{cir}}(0,t)x_0}}{a_{\text{cir}}(0,T)e^{-b_{\text{cir}}(0,T)x_0}}a_{\text{cir}}(t,T)e^{\varphi(t)(T-t)}$$
+
+All other formulas (options) follow CIR structure.
+
+\subsection{Black-Karasinski Model (arbitrage model)}
+
+\textit{Log-normal model:}
+$$d\ln(r_t) = \kappa(\varphi(t) - \ln(r_t))dt + \sigma dW_t$$
+
+Key property: $r_t$ is \textbf{log-normally distributed} and \textbf{always positive} (no negative rates). 
+
+Equivalently, let $x_t = \ln(r_t)$; then $x_t$ follows Vasicek dynamics with mean-reverting level $\varphi(t)$. Thus $r_t = \exp(x_t)$.
+
+By Itô's lemma, dynamics of $r_t$:
+$$\frac{dr_t}{r_t} = \left(\kappa\varphi(t) - \kappa\ln(r_t) + \frac{\sigma^2}{2}\right)dt + \sigma dW_t$$
+
+Solution (exponential of Vasicek solution):
+$$r_t = \exp\left[\ln(r_s)e^{-\kappa(t-s)} + \kappa\int_s^t \varphi(u)e^{-\kappa(t-u)}du + \sigma\int_s^t e^{-\kappa(t-u)}dW_u\right]$$
+
+
+%-------------------
+
+
+\section{Multifactor Models}
+
+\subsection{Two-Factor Gaussian Model}
+
+\textit{Dynamics of factors:} Hull-White (1994) two-factor model (formulation by Brigo-Mercurio 2006). Two factors $\{x_t\}_{t \geq 0}$ and $\{y_t\}_{t \geq 0}$ with $x_0 = y_0 = 0$, model calibrated at $t=0$ on yield curve:
+$$dx_t = -ax_t dt + \sigma dW_{1t}$$
+$$dy_t = -by_t dt + \eta dW_{2t}$$
+
+where $\{W_{1t}\}$ and $\{W_{2t}\}$ are Brownian motions with correlation $\rho$. Instantaneous short rate:
+$$r_t = x_t + y_t + \varphi(t)$$
+
+\textit{Zero-coupon bond value:}
+$$P_{2fg}(t,T) = \frac{P^m(0,T)}{P^m(0,t)}\exp(B(t,T))$$
+ 
+$$B(t,T) = \frac{1}{2}[V(t,T) - V(0,T) + V(0,t)] - \frac{1-e^{-a(T-t)}}{a}x_t - \frac{1-e^{-b(T-t)}}{b}y_t$$
+
+\textit{European call:} Same structure as one-factor model:
+$$\text{call}_{2fg}(P,K) = P_{2fg}(0,T)\Phi(h) - KP_{2fg}(0,T_{\text{call}})\Phi(h - \sigma_p)$$
+
+where $h = \frac{\sigma_p}{2} + \frac{1}{\sigma_p}\ln\frac{P_{2fg}(0,T)}{KP_{2fg}(0,T_{\text{call}})}$ and $\sigma_p$ is volatility of bond returns (derived from $V(t,T)$ variance term).
+
+Two-factor structure captures both level and slope of yield curve; better fit than one-factor models.
+
+\subsection{Fong-Vasicek Model}
+
+\textit{Two-factor extension of Vasicek:} Uses rate volatility as second factor for interpretability. Dynamics under EMM:
+$$dr_t = \kappa(\theta - r_t)dt + \sqrt{v_t}dZ_{1t}$$
+$$dv_t = \gamma(\bar{v} - v_t)dt + \xi\sqrt{v_t}dZ_{2t}$$
+
+where $\{Z_{1t}\}$ and $\{Z_{2t}\}$ are correlated Brownian motions with correlation $\rho$. First factor $r_t$ = short rate; second factor $v_t$ = variance of short rate.
+
+\textit{Zero-coupon bond value:} Exponential-affine structure:
+$$P_{fvk}(t,T) = \exp[-b_{fvk,1}(t,T)r_t + b_{fvk,2}(t,T)v_t + b_{fvk,3}(t,T)]$$
+
+with $b_{fvk,1}(t,T) = b_{vk}(t,T) = \frac{1 - e^{-\kappa(T-t)}}{\kappa}$, while $b_{fvk,2}(t,T)$ and $b_{fvk,3}(t,T)$ involve confluent hypergeometric functions (require numerical integration; Selby-Strickland (1995) recursive algorithm available).
+
+Second factor captures stochastic volatility of rates; improves fit relative to constant-volatility one-factor Vasicek.
+
+\subsection{Longstaff-Schwartz Model}
+
+\textit{Extension of CIR with stochastic volatility:} Dynamics under EMM for short rate $r_t$ and volatility $v_t$:
+$$dr_t = \mu_r(r_t, v_t)dt + a\sqrt{\frac{\beta r_t - v_t}{a(\beta - a)}}dZ_{1t} + \beta\sqrt{\frac{v_t - ar_t}{\beta(\beta - a)}}dZ_{2t}$$
+$$dv_t = \mu_v(r_t, v_t)dt + a^2\sqrt{\frac{\beta r_t - v_t}{a(\beta - a)}}dZ_{1t} + \beta^2\sqrt{\frac{v_t - ar_t}{\beta(\beta - a)}}dZ_{2t}$$
+
+
+\textbf{Key remarks:} 
+- Brownian motions $\{Z_{1t}\}$, $\{Z_{2t}\}$ are independent
+- Volatility constraint: $a\tau \leq v_t \leq b\tau$
+- Parameter $\beta$ must be sufficiently large relative to $\alpha$ for stochastic volatility behavior
+
+\textit{Zero-coupon bond:}
+$$P_{ls}(t,T) = a_{ls,1}(t,T)^y a_{ls,2}(t,T)^z\exp[b_{ls,1}(t,T)r_t + b_{ls,2}(t,T)v_t + b_{ls,3}(t,T)]$$
+
+\textit{European call:}
+$$\text{call}_{ls}(P,K) = P_{ls}(0,T)\chi^2(\cdot;\cdot) - KP_{ls}(0,T_{\text{call}})\chi^2(\cdot;\cdot)$$
+
+\subsection{Two-Factor Cox-Ingersoll-Ross Model (Brigo-Mercurio formulation)}
+$$dx_t = \kappa_1(\theta_1 - x_t)dt + \sigma_1\sqrt{x_t}dZ_{1t}$$
+$$dy_t = \kappa_2(\theta_2 - y_t)dt + \sigma_2\sqrt{y_t}dZ_{2t}$$
+
+where $\{Z_{1t}\}$ and $\{Z_{2t}\}$ are independent Brownian motions. Feller condition: $2\kappa_i\theta_i \geq \sigma_i^2$ for $i = 1,2$ ensures $x_t, y_t \geq 0$.
+
+\textit{Instantaneous risk-free rate:}
+$$r_t = x_t + y_t$$
+
+\textit{Arbitrage-free version:}
+$$r_t = x_t + y_t + \varphi(t)$$
+
+with shift $\varphi(t) = f^m(0,t) - f^{cir}_1(0,t) -f^{cir}_2(0,t)$.
+\textit{Zero-coupon bond value:} Product of two one-factor CIR bond values:
+$$P_{2fcir}(t,T) = a_{cir,1}(t,T)a_{cir,2}(t,T)\exp[-b_{cir,1}(t,T)x_t - b_{cir,2}(t,T)y_t]$$
+
+with $a_{cir,i}(t,T) = a_{cir}(t,T)$ and $b_{cir,i}(t,T) = b_{cir}(t,T)$ from one-factor CIR model, replacing parameters $\{\kappa, \theta, \sigma\}$ with $\{\kappa_i, \theta_i, \sigma_i\}$ for $i = 1,2$.
+
+\subsection{Multifactor Case}
+
+\textit{N-factor extension:} Each factor follows CIR dynamics $dx_{it} = \kappa_i(\theta_i - x_{it})dt + \sigma_i\sqrt{x_{it}}dZ_{it}$ with independent Brownian motions; instantaneous rate $r_t = \sum_{i=1}^N x_{it}$ (or $+ \varphi(t)$ for arbitrage-free version). Zero-coupon bond: product of $N$ one-factor CIR bond values.
+
+\subsection{Affine Term Structure Models - Duffie-Kan}
+
+$N$ exogenous factors $X_t = (X_{1t}, \ldots, X_{Nt})' \in \mathbb{R}^N$ follow under EMM:
+$$dX_t = (K\theta - KX_t)dt + S_t dW_t$$
+
+where $K$ is $N \times N$ matrix, $\theta$ is $N \times 1$ vector, $W_t$ is $N$-dimensional Brownian motion, $S_t$ is $N \times N$ diagonal matrix with elements $[S_t]_{ii} = \sqrt{a_i + \beta_i' X_t}$ [$a_i \geq 0$, $\beta_i \in \mathbb{R}^N$].
+
+\textit{Market price of risk:} Structure $\lambda_t = \lambda_1 S_t + S_t\lambda_2 X_t$ with $\lambda_1 \in \mathbb{R}^N$, $\lambda_2$ matrix of dimension $N \times N$.
+
+\textit{Linear short rate:}
+$$r_t = \delta_0 + \delta_1' X_t$$
+
+with $\delta_0 \in \mathbb{R}$, $\delta_1 \in \mathbb{R}^N$.
+
+\textit{Zero-coupon bond (exponential-affine):}
+$$P_{aff}(t,T) = \exp[A(\tau) - B(\tau)' X_t]$$
+
+with $\tau = T - t$ [time-to-maturity].
+%-------------------
+\section{Implementation}
+
+\textit{Estimation vs Calibration:} Estimation fits model to historical yield curve (ex-post analysis); calibration fits to contemporaneous market data (yields + derivatives prices) for precise point-in-time pricing.
+procidure: for equilibrium models, fit to yiled curve (minimizing squared errors); for arbitrage models, fit to yield curve then fit to caps/floors or swaption prices. we check the price fit but a more stringent test is to check the implied volatilities (using Blacks) fit.
+
+\subsection{Black Model for Caps and Floors}
+
+\textit{Black model approximation:} Assumes forward rates are lognormal; ignores correlation between discount factor and payoff; recognizes future spot rate $\approx$ future forward rate $l_{t_{j-1}}(t_j) = F(t_{j-1}, t_j)$.
+
+\textit{Cap price with strike $K$ and maturity $t_n$:}
+$$\text{cap}(t_n) = M \sum_{j=i+1}^n \tau P(0, t_j)\left[F(t_{j-1}, t_j)\Phi(d_1) - K\Phi(d_2)\right]$$
+
+where $\tau$ is accrual period (typically 0.25 for quarterly), $M$ is notional, $P(0, t_j)$ is discount factor, and:
+$$d_1 = \frac{1}{v_j}\left[\ln\frac{F(t_{j-1}, t_j)}{K} + \frac{v_j^2}{2}\right], \quad d_2 = d_1 - v_j, \quad v_j = \sigma_{\text{cap}}\sqrt{t_{j-1}}$$
+
+with $\sigma_{\text{cap}}$ = implied volatility from market quotes (typically varies by tenor; first reset at $t_0 = 0.25$, $t_1 = 0.5$, etc.).
+
+\textit{Floor price:} By put-call parity:
+$$\text{floor}(t_n) = M \sum_{j=i+1}^n \tau P(0, t_j)\left[K\Phi(-d_2) - F(t_{j-1}, t_j)\Phi(-d_1)\right]$$
+
+\textit{At-the-money (ATM) strike:} Cap and floor are ATM when $K = K_f$ (forward swap rate):
+$$K_f = \frac{P(0, t_a) - P(0, t_n)}{\sum_{j=i+1}^n \tau P(0, t_j)}$$
+
+\subsection{Black Model for Swaptions}
+
+\textit{Black approximation:} Ignores correlation between discount factor and swaption payoff; assumes forward swap rates are driftless geometric Brownian motions under EMM.
+
+\textit{Payer swaption price with strike $K$ and maturity $t_n$:}
+$$\text{payer swaption}(t_n) = M\left(K_f\Phi(d_1) - K\Phi(d_2)\right)\sum_{j=a+1}^n \tau P(0, t_j)$$
+
+\textit{Receiver swaption price:}
+$$\text{receiver swaption}(t_n) = M\left(K\Phi(-d_2) - K_f\Phi(-d_1)\right)\sum_{j=a+1}^n \tau P(0, t_j)$$
+
+where $K_f$ is forward swap rate, and:
+$$d_1 = \frac{1}{v}\left[\ln\frac{K_f}{K} + \frac{v^2}{2}\right], \quad d_2 = \frac{1}{v}\left[\ln\frac{K_f}{K} - \frac{v^2}{2}\right]$$
+$$v = \sigma_{\text{swapt}}\sqrt{t_a}$$
+
+with $\sigma_{\text{swapt}}$ = implied swaption volatility from market, $t_a$ = start of swap period.
+
+\subsection{Kalman Filtering}
+
+\textit{State-space framework:} Measurement equation relates observed zero-coupon yields to hidden state variables; transition equation describes state variable evolution; estimates parameters maximizing total log-likelihood.
+
+\textit{Measurement equation:}
+$$ZCY_t = A + BX_t + \eta_t$$
+
+where $A$ is $N \times 1$ vector, $B$ is $N \times K$ matrix, $\eta_t$ is $N \times 1$ vector of measurement errors with diagonal covariance matrix $H = \text{diag}(h_{t_1}^2, \ldots, h_{t_N}^2)$ [variances may differ by maturity but constant over time; uncorrelated cross-sectionally].
+
+\textit{Transition equation:}
+$$x_{i,t} = \mathbb{E}[x_{i,t}|x_{i,t-\delta}] + \sqrt{\text{Var}[x_{i,t}|x_{i,t-\delta}]}\xi_t$$
+
+\textit{Algorithm:} Loop over all observation dates: (1) predict next-period state estimators and error variance; (2) compute prediction error (observed yields $-$ model-predicted yields) and its variance; (3) compute log-likelihood from prediction error; (4) update state estimators using prediction error and updated variance. Final parameters maximize total log-likelihood over sample.
+
+\subsection{Diebold-Li Approach}
+
+Dynamic extension of Nelson-Siegel smoothing.
+
+with time-varying loadings $L_a = 1$, $L_b = \frac{1-e^{-\tau/\tau}}{T}$, $L_c = \left(\frac{1-e^{-\tau/\tau}}{T} - e^{-\tau/T}\right)$ [parameter $\tau$ fixed]. Factor representation:
+$$zcy_t(T) = a_t L_a + b_t L_b + c_t L_c$$
+
+where $a_t$ = level, $b_t$ = slope, $c_t$ = curvature.
+
+\textit{Forecasting:} Set parameter $\tau$ such that curvature loading $L_c$ reaches maximum at 30 months. Specify AR(1) dynamics for each factor:
+$$\hat{x}_{t+h} = c_x + k_x\hat{x}_t, \quad \text{for } x = \{a, b, c\}$$
+
+\textit{Parameter estimation:} OLS regression of $x_{t+h}$ on $x_t$ estimates intercept $c_x$ and slope $k_x$ by minimizing squared residuals between observed future factor values and predicted values.
+
+%-------------------
+\section{HJM and Market Models}
+
+
+
+
+
+
+
+% ==========================================
+\noindent\textbf{\large HJM and Market Models}
+\vspace{0.5em}
+
+\noindent\textbf{HJM General Framework}
+
+\vspace{0.3em}
+\noindent Heath, Jarrow \& Morton (1992) model the entire yield curve by working directly with \textbf{instantaneous forward rates} $f(t,T)$ rather than the short rate $r_t$. The key insight: specifying the \textbf{forward rate volatility function} $\sigma(t,T)$ fully determines the dynamics of the whole yield curve. This opens a general family of term structure models.
+
+\vspace{0.3em}
+\noindent\textbf{Core result} (HJM drift condition): Under the EMM, the drift of the instantaneous forward rate is \emph{entirely pinned down} by its volatility — no free parameters remain for the drift. Formally, the forward rate dynamics are:
+\[
+df(t,T) = \sigma(t,T)\int_t^T \sigma(t,u)\,du\; dt + \sigma(t,T)\,dW_t
+\]
+Specifying $\sigma(t,T)$ completely characterizes the model for all maturities simultaneously.
+
+\vspace{0.3em}
+\noindent\textbf{Markov condition (Carverhill 1994):} In general, $r_t = f(t,t)$ is \emph{not} Markovian, making tree implementation impossible. The short rate is Markovian if and only if $\sigma(t,T) = h(t)\cdot g(T)$ (separable form). In that case the HJM model reduces to a \textbf{generalized Hull-White model} and can be implemented on a recombining tree.
+
+\vspace{0.3em}
+\noindent\textbf{Volatility specifications:}
+\begin{itemize}
+    \item \textbf{Ritchken--Sankarasubramanian}: $\sigma(t,T) = \psi_t \cdot \exp(-\kappa(T-t))$ with $\psi_t$ stochastic; leads to a two-state Markov representation $(r_t, \phi_t)$ enabling tree/PDE implementation.
+    \item \textbf{Li--Ritchken--Sankarasubramanian}: special case with $\sigma(t,T) = v_t^\beta \exp(-\kappa(T-t))$, $0 \le \beta \le 1$; interpolates between Gaussian ($\beta=0$) and log-normal ($\beta=1$) dynamics.
+    \item \textbf{Mercurio--Moraleda / Moraleda--Vorst}: polynomial-exponential forms that generate a \textbf{humped term structure of volatility} (volatility peaks at intermediate maturities) — a stylized fact of cap implied vol surfaces. Former lacks closed-form ZCB; latter has closed-form ZCB.
+\end{itemize}
+
+\vspace{0.5em}
+\noindent\textbf{Market Models (BGM/LMM)}
+
+\vspace{0.3em}
+\noindent \textbf{Motivation:} Market quotes cap/floor/swaption prices as Black implied vols, but the Black formula rests on invalid assumptions (ignores discount factor–payoff correlation; assumes driftless GBM for forward rates under the EMM). Market models \emph{rigorously justify} the Black formula via a \textbf{change of probability measure}.
+
+\vspace{0.3em}
+\noindent\textbf{Key mechanism:} The simply-compounded forward rate $F(t;T_1,T_2)$ is a ratio of traded assets divided by $P(t,T_2)$, so it is a \textbf{$T_2$-forward martingale} under the $T_2$-forward measure $\mathbb{Q}^{T_2}$. Under this measure it can be modeled as a driftless GBM, exactly recovering the Black caplet formula without approximations.
+
+\vspace{0.3em}
+\noindent\textbf{Cap Market Model (BGM/Miltersen--Sandmann--Sondermann/Jamshidian 1997):}
+\begin{itemize}
+    \item Each forward rate $F(t;T_{k-1},T_k)$ follows driftless GBM under its own forward measure $\mathbb{Q}^{T_k}$.
+    \item Caplets are priced exactly with the Black formula; cap = sum of Black caplets.
+    \item Calibration: fit the volatility function $\gamma(t,T_k)$ (e.g., parametric humped form $\gamma = [\alpha + \beta(T_k-t)]e^{-\delta(T_k-t)} + \theta$) to market cap implied vols by minimizing squared pricing errors.
+    \item \textbf{Swaptions cannot be priced analytically} in the cap market model $\Rightarrow$ use Monte Carlo simulation.
+    \item Under a different forward measure $\mathbb{Q}^{T_n}$, forward rates acquire a \textbf{drift correction}; simulation uses this drift-adjusted dynamics via Euler scheme.
+\end{itemize}
+
+\vspace{0.3em}
+\noindent\textbf{Swap Market Model (Jamshidian 1997):}
+\begin{itemize}
+    \item The forward swap rate $K_f(t)$ is a ratio of traded assets, hence a martingale under the \textbf{swap measure} (annuity as numéraire). Models $K_f(t)$ as driftless GBM $\Rightarrow$ Black swaption formula is exact.
+    \item \textbf{Cap/floor market model and swap market model are theoretically incompatible}: one cannot simultaneously use Black formula for both caps and swaptions in a single consistent model. Practitioners must choose one and price the other numerically.
+\end{itemize}
+
+\vspace{0.5em}
+\noindent\textbf{Backward-Looking Rates (Post-LIBOR, Lyashenko--Mercurio 2019)}
+
+\vspace{0.3em}
+\noindent With the end of LIBOR, caps/floors/swaptions reference \textbf{compounded overnight rates set in arrears} (SOFR, CORRA). These are \textbf{backward-looking}: the rate for period $[T_1,T_2]$ is not known until $T_2$.
+
+\vspace{0.3em}
+\noindent\textbf{Key idea:} Extend the zero-coupon bond definition beyond maturity: for $t > T$, set $P(t,T) = B(t)/B(T)$ (bank account ratio), which remains a valid numéraire. The backward-looking forward rate $\tilde{F}(t;T_1,T_2)$ is still a $T_2$-martingale, giving a formula analogous to the forward-looking case.
+
+\vspace{0.3em}
+\noindent\textbf{Volatility adjustment:} Before $T_1$, $\tilde{F}(t;T_1,T_2)$ behaves like the forward-looking rate (same volatility $\gamma(t,T_2)$). Between $T_1$ and $T_2$, compounding of overnight rates induces a \textbf{linear volatility decay}: $\bar{\gamma}(t;T_1,T_2) = \min\!\left(1, \frac{T_2-t}{T_2-T_1}\right)\gamma(t,T_2)$. Market model structure and measure-change drift corrections carry over unchanged.
+
+
+
+
+
+
+
+
+
+
+
+%-------------------
+\section{Numerical Methods}
+
+
+\subsection{Binomial Trees}
+
+\textit{Heston (1995) binomial tree:} Discrete-time arbitrage-free tree for one-factor model where short rate follows random walk with mean reversion. Short rate dynamics:
+$$r_{t+\Delta t} = \alpha + \rho r_t + \sigma\varepsilon$$
+
+\textit{Connection to continuous models:} Equivalent to Vasicek or CIR with $\kappa = 1 - \rho$ and $\theta = \alpha/\kappa$. 
+
+\textit{No-arbitrage valuation:} Portfolio value equals discounted expected contingent claim under EMM:
+$$g(t) = e^{-r_t\Delta t}[\pi g_u(t+\Delta t) + (1-\pi)g_d(t+\Delta t)]$$
+
+with risk-neutral probability:
+$$\pi = \frac{e^{r_t\Delta t} - d}{u - d}, \quad u = \exp[(-\alpha - \rho r_t - \sigma)\Delta t], \quad d = \exp[(-\alpha - \rho r_t + \sigma)\Delta t]$$
+
+Ensures martingale property: discounted value process is martingale under EMM.
+
+\subsection{Trinomial Trees}
+
+\textit{Hull-White trinomial tree:} Captures richer interest rate dynamics with faster convergence to continuous time limit; more complex than binomial trees but better for mean-reverting processes. Designed for Hull-White model (can adapt for log-normal processes like Black-Karasinski). Underlying process:
+$$dx_t = -\kappa x_t dt + \sigma dW_t$$
+
+Process is normally distributed and mean-reverting to zero.
+
+\textit{Tree structure:} At each time step $\Delta t$, discretized process value $x_{i,j}$ (where $i$ = time index, $j$ = space index) branches to three nodes with transition probabilities $\pi_u, \pi_m, \pi_d$:
+- Up state: $x_{i+1,j+1}$
+- Middle state: $x_{i+1,j}$
+- Down state: $x_{i+1,j-1}$
+
+\textit{Probability constraints and moment matching:} Transition probabilities sum to one and match first two moments of underlying process:
+$$\pi_u + \pi_m + \pi_d = 1$$
+$$\pi_u(x_{i,j} + \Delta x_j) + \pi_m x_{i,j} + \pi_d(x_{i,j} - \Delta x_j) = x_{i,j}e^{-\kappa\Delta t}$$
+
+Variance equation:
+$$\pi_u(x_{i,j} + \Delta x_j)^2 + \pi_m x_{i,j}^2 + \pi_d(x_{i,j} - \Delta x_j)^2 = [x_{i,j} + \Delta x_j(\pi_u - \pi_d)]^2 + \sigma^2\frac{1-e^{-2\kappa\Delta t}}{2\kappa}$$
+
+\textit{Branching geometry:} Tree geometry adapts in different regions to improve mean reversion capture and reduce negative rates:
+- \textbf{Process (A)}: Normal branching when $x_{i,j}$ neither too high nor too low; states $\{x_{i,j} - \Delta x, x_{i,j}, x_{i,j} + \Delta x\}$
+- \textbf{Process (B)}: When $x_{i,j}$ is too high (pulls down); states $\{x_{i,j} - 2\Delta x, x_{i,j} - \Delta x, x_{i,j}\}$
+- \textbf{Process (C)}: When $x_{i,j}$ is too low (pulls up); states $\{x_{i,j}, x_{i,j} + \Delta x, x_{i,j} + 2\Delta x\}$
+
+Critical levels $j_{\min}$ and $j_{\max}$ determine where branching switches from (A) to (C) and from (A) to (B). Numbering states from bottom: $x_{i,j} = j\Delta x$; offsets chosen to ensure mean reversion and positivity.
+
+\subsection{Second Stage of the Tree: Calibration via Arrow-Debreu Prices}
+
+\textit{Objective:} Calibrate tree-built nodes to match market zero-coupon bond prices using Arrow-Debreu prices $Q_{ij}$ (state prices: value of claim paying \$1 at node $j$, time $i$).
+
+\textit{Zero-coupon bond pricing constraint with shift parameter:}
+$$P_{NSS}(0, (i+1)\Delta t) = \sum_{k} Q_{ik}\exp(-\alpha_i\Delta t) \pi_k$$
+
+Solve for shift parameter $\alpha_i$ to match observed bond price $P_{NSS}(0, (i+1)\Delta t)$ from market data.
+
+\textit{State price propagation:}
+$$Q_{(i+1)j} = \sum_k Q_{ik}\pi_{kj}\exp\left(-(\alpha_i + k\Delta x)\Delta t\right)$$
+
+where $\pi_{kj}$ is transition probability from state $k$ to state $j$.
+
+\textit{Black-Karasinski extension:} For log-normal rates, apply $f^{-1}(\cdot) = \exp(\cdot)$ and solve $\alpha_i$ numerically as the equation becomes nonlinear.
+
+\textbf{Key points:} Match each bond maturity sequentially; one $\alpha_i$ per time step (one-factor); ensure positivity of rates if using normal models; use Newton-Raphson for implicit solutions.
+
+\subsection{Finite Difference Methods}
+
+\textit{Flexibility vs. convergence trade-off:} The finite difference method is more flexible than trees because it can easily accommodate a wide variety of interest rate models. However, the method is slower to converge (at least with its simplest scheme) notably because it requires the discretization of an entire state-space.
+
+\subsubsection{The One-dimensional Explicit Scheme}
+
+\textit{One-factor diffusion model under EMM:}
+$$dr_t = \mu(t, r_t)dt + \sigma(t, r_t)dW_t$$
+
+\textit{PDE for security value:} In the absence of arbitrage, any fixed-income security can be viewed as a contingent claim on the instantaneous risk-free rate; its value $g(t, r_t)$ satisfies:
+$$\frac{\partial g(t,r_t)}{\partial t} + \frac{\partial g(t,r_t)}{\partial r_t}\mu(t,r_t) + \frac{1}{2}\frac{\partial^2 g(t,r_t)}{\partial r_t^2}\sigma(t,r_t)^2 - r_t g(t,r_t) = 0$$
+
+\textit{Grid discretization:} A finite difference method consists in discretizing this PDE in a state-space represented by a grid with space step $\Delta r$ and time step $\Delta t$. State nodes indexed by $i$ (space, from bottom to top) and $t$ (time, from current to maturity $T$).
+
+\textit{Discretized Greeks:} Let $\Delta_i^t$, $\Gamma_i^t$ and $\theta_i^t$ denote the discretized versions of the contingent claim's delta, gamma and theta respectively, all being evaluated at space node $i$ (numbered from bottom to top) and time node $t$ (numbered from current time 0 till maturity $T$). The drift $\mu(t, r_t)$ and volatility $\sigma(t, r_t)$ being functions of $t$ and $r_t$, their discretized versions at space node $i$ and time node $t$ can be written as $\mu_i^t$ and $\sigma_i^t$. Thus, the discretized PDE is:
+$$\theta_i^t + \Delta_i^t\mu_i^t + \frac{1}{2}\Gamma_i^t(\sigma_i^t)^2 - i\Delta r g = 0$$
+
+\textit{Central difference approximations:}
+$$\Delta_i^t = \frac{g_{i+1}^t - g_{i-1}^t}{2\Delta r}$$
+
+$$\Gamma_i^t = \frac{g_{i+1}^t - 2g_i^t + g_{i-1}^t}{(\Delta r)^2}$$
+
+$$\theta_i^t = \frac{g_i^t - g_i^{t-1}}{\Delta t}$$
+
+\textit{Backward recursion formula:} Plugging the above approximations into the discretized PDE and rearranging:
+$$g_i^{t-1} = A_i^t g_{i-1}^{t-1} + B_i^t g_i^{t-1} + C_i^t g_{i+1}^{t-1}$$
+
+with $v_1 = \frac{\Delta t}{(\Delta r)^2}$, $v_2 = \frac{\Delta t}{\Delta r}$, and coefficients:
+
+$$A_i^t = \frac{1}{2}[(\sigma_i^t)^2 v_1 - \mu_i^t v_2]$$
+
+$$B_i^t = 1 - (\sigma_i^t)^2 v_1 - i\Delta r\Delta t$$
+
+$$C_i^t = \frac{1}{2}[\mu_i^t v_2 + (\sigma_i^t)^2 v_1]$$
+
+\textit{Key properties and stability:}
+\begin{itemize}
+\item Sum of coefficients: $A_i^t + B_i^t + C_i^t = 1 - i\Delta r\Delta t$ captures the one-period discount factor; equation (7.25) embeds the martingale property of discounted price process.
+\item Weights $A_i^t$, $B_i^t$, $C_i^t$ are not probabilities and may lie outside $[0,1]$, potentially causing instability. Stability requires small $v_1$ and $v_2$: discretize time sufficiently relative to space (horizontally stretched grid).
+\item Choice of $r_{\max}$: balance between avoiding truncation bias (need $r_{\max}$ sufficiently high) and computational efficiency (higher $r_{\max}$ requires finer discretization). Trade-off between accuracy and cost.
+\end{itemize}
+
+\textit{Boundary conditions:} 
+\begin{itemize}
+\item Zero-coupon bonds: $g = 1$ when $r = 0$; $g = 0$ when $r = r_{\max}$.
+\item Deep in-the-money regions: linear approximation $g_{i_{\max}}^t = 2g_{i_{\max}-1}^t - g_{i_{\max}-2}^t$.
+\item Deep out-of-the-money regions: derivatives are worthless.
+\item American options: compute maximum of exercise and continuation values recursively at each node; use exercise value as boundary condition for deep in-the-money regions.
+\end{itemize}
+
+\subsubsection{Two-dimensional Explicit Scheme}
+
+\textit{Two-factor diffusion model under EMM:}
+$$dx_s = \mu(t, x_s, y_t)dt + \sigma(t, x_s, y_t)dW_s^x$$
+$$dy_t = \mu(t, x_s, y_t)dt + \sigma(t, x_s, y_t)dW_s^y$$
+
+with $dW_s^x dW_s^y = \rho dt$ (correlation $\rho$ between factors). Contingent claim value $g(t, x_s, y_t)$ satisfies:
+
+$$\frac{\partial g(t,x_s,y_t)}{\partial t} + \frac{\partial g(t,x_s,y_t)}{\partial x_s}\mu(t,x_s,y_t) + \frac{1}{2}\frac{\partial^2 g(t,x_s,y_t)}{\partial x_s^2}\sigma(t,x_s,y_t)^2 + \frac{\partial g(t,x_s,y_t)}{\partial y_t}\mu(t,x_s,y_t) + \frac{1}{2}\frac{\partial^2 g(t,x_s,y_t)}{\partial y_t^2}\sigma(t,x_s,y_t)^2 + \rho\sigma_x(t,x_s,y_t)\sigma_y(t,x_s,y_t)\frac{\partial^2 g(t,x_s,y_t)}{\partial x_s \partial y_t} - r_t g(t,x_s,y_t) = 0$$
+
+\textit{3-dimensional grid discretization:} Space steps $\Delta x$ and $\Delta y$; time step $\Delta t$. Notation: $g_{i,j}^t$ = contingent claim value at node $i$ for state variable $x$ (left to right), node $j$ for state variable $y$ (bottom to top), at time $t$.
+
+\textit{Discretization approach:} Apply central differences for partial derivatives and backward recursion as in one-dimensional case. Cross-partial derivative $\frac{\partial^2 g}{\partial x_s \partial y_t}$ discretized using four-point stencil. Solution proceeds backward through time on 2-D grid at each time step.
+
+\subsection{Monte Carlo Simulation}
+
+\textit{Generating normal random variables:} Box-Muller method: given $u_1, u_2$ from uniform $[0,1]$:
+$$\varepsilon_1 = \sqrt{-2\ln(u_1)}\cos(2\pi u_2), \quad \varepsilon_2 = \sqrt{-2\ln(u_1)}\sin(2\pi u_2)$$
+
+\textit{Euler discretization scheme:}
+$$r_{t+\Delta t} = r_t + \kappa(\theta - r_t)\Delta t + \sigma\sqrt{\Delta t}\varepsilon_t$$
+
+\textit{Full truncation scheme:} To preserve non-negativity, replace $r_t$ with $\max(r_t, 0)$ in drift and diffusion coefficients.
+
+\textit{Milstein scheme:} Higher accuracy via:
+$$r_{t+\Delta t} = r_t + \kappa(\theta - r_t)\Delta t + \sigma\sqrt{\Delta t}\varepsilon_t + \frac{\sigma}{4}\Delta t(\varepsilon_t^2 - 1)$$
+
+\textit{Path-dependent valuation:} For each simulated path $j$, compute discount factor as:
+$$D^{(j)} = \exp\left(-\sum_{n=0}^{N-1} r_n^{(j)}\Delta t\right)$$
+
+Then price security as:
+$$\text{Price} = \mathbb{E}^Q[D^{(j)} \cdot X(T)] = \frac{1}{M}\sum_{j=1}^{M} D^{(j)} \cdot X^{(j)}(T)$$
+
+where $X(T)$ is terminal payoff and $M$ is number of paths.
+
+\textit{Correlated Brownian motions:} Generate independent $(\varepsilon_1, \varepsilon_2)$, then:
+$$\Delta W_1 = \sqrt{\Delta t}\varepsilon_1, \quad \Delta W_2 = \sqrt{\Delta t}(\rho\varepsilon_1 + \sqrt{1-\rho^2}\varepsilon_2)$$
+
+\subsubsection{Path-Dependent Interest Rate Payoffs}
+
+\textit{Barrier caps/floors:} Activated ("in"-type) or deactivated ("out"-type) first time reference rate reaches critical barrier level from below ("up") or above ("down"). Four main types: up-in cap, down-in floor, down-out cap, up-out floor. Payoff:
+$$\left(i_{u-1}^{(u)} - K\right)^+ \cdot \mathbb{1}\left(\max_{s \in [u-1,u]} i_s^{(u)} > H\right)$$
+
+Barrier condition applies to whole cap/floor: once a caplet activates, all subsequent caplets activate.
+
+\textit{Bounded caps/floors:} Total accumulated payout cannot exceed amount $M$. At each settlement, accumulated value is computed and test applied to determine if below limit:
+$$\left(i_{u-1}^{(u)} - K\right)^+ \cdot \mathbb{1}\left(\sum_{j=1}^{u-1}\left(i_{j-1}^{(j)} - K\right)^+ < M\right)$$
+
+Option deactivated first time test fails.
+
+\textit{Incremental fixed swaps:} Fixed leg calculated as weighted average of fixed and variable rates. For payer swap with notional $M$, fixed rate $K$, frequency $\tau$:
+$$-M\tau\left(\kappa + (1-x)u_t^{(u)}\right) + M\tau d_t^{(u)}$$
+
+Fraction $x$ contractually determined by reference rate tier: $x = 100\%$ if $i_t < i_1$; $x = 60\%$ if $i_2 \leq i_t \leq i_1$; $x = 0\%$ if $i_t > i_2$. At each reset, simulated rate determines fraction $x$ and payoff.
+
+\textit{Ratchet caps/floors:} Strike adjusts to level of reference rate on preceding reset date. Payoff at settlement:
+$$\left(i_{u-1}^{(u)} - i_{u-2}^{(u-1)}\right)^+$$
+
+Simulation adjusted to compute difference between current and previous reset rates at each settlement date.
+
+\textit{Rolling caps/floors:} Nominal is not constant. When caplet (floorlet) not exercised (not in-the-money), its notional is added to next caplet (floorlet). At each reset date, apply test and adjust payoff accordingly.
+
+%-------------------
+
+
+\section{Credit Risk Fundamentals}
+
+\subsection{Key Concepts and Stylized Facts}
+
+\subsubsection{Credit Risk and Credit Spreads}
+
+\textbf{Credit risk} is the possibility that a counterparty fails to meet contractual obligations, causing \textbf{price fluctuations reflecting exposure to credit risk}. Exposure has two components: \textbf{timing of default} (measured by default probability) and \textbf{magnitude of default} (measured by loss upon default), decomposing as: (credit exposure) $\times$ (loss given default).
+
+Credit risk exposure on fixed-income securities is compensated by the \textbf{credit spread}. For a debt claim with value $D$ promising $M$ at period end: 
+
+$$D = \frac{M}{1 + y} \quad \text{(8.1)}$$
+
+If defaultable with EMM probability $q$ of delivering $M(1-L)$, where $L$ is \textbf{loss given default}:
+
+$$D = \frac{M(1-q) + M(1-L)q}{1 + r} \quad \text{(8.2)}$$
+
+where $r$ is the risk-free rate. Combining (8.1) and (8.2):
+
+$$y - r \approx qL \quad \text{(8.3)}$$
+
+\textbf{Fundamental decomposition:} credit spread = (default probability) $\times$ (loss given default).
+
+\textbf{Yield spread vs. credit spread:} Yield spread of defaultable instruments includes credit spread plus other premiums (tax, liquidity); attributing the fraction to credit risk is empirical.
+
+\subsubsection{The Term Structure of Credit Spreads}
+
+Consider homogeneous defaultable securities (comparable credit risk source) with observable market prices at different maturities. Assuming credit risk is the only factor in total yield spread, the \textbf{term structure of credit spreads (TSCS)} is calculated as the difference between yield-to-maturity and (risk-free) zero-coupon yield for the same horizon.
+
+\textbf{TSCS dynamics:} Credit spreads are volatile and counter-cyclical (spikes during 2007-08 crisis and 2020 Covid pandemic). Like risk-free zero-coupon yields, the TSCS is usually increasing during quiet times and inverted in crisis times.
+
+\subsubsection{Recovery Rates}
+
+\textbf{Recovery rate:} One minus loss given default; one of two major constituents of credit spread. For defaultable zero-coupon bond value $D(t,T)$ (promising \$1 at $T$), let $\tau$ = random default time and $\delta$ = recovery rate.
+
+Three recovery rate definitions exist:
+
+\vspace{0.3em}
+\noindent\textbf{Recovery of Face Value (RFV):}
+
+\textbf{Definition:} Fraction of defaultable claim nominal at default time.
+
+\textbf{Formula:} $D(T,T) = 1_{\tau>T} + \frac{\delta}{P(t,T)} 1_{\tau \leq T}$ \quad (8.4)
+
+\textbf{Usage:} Rating agencies (e.g., Moody's) for historical recovery rates.
+
+\textbf{Pro:} Eases comparison across claims; accommodates delay to resolve default.
+
+\textbf{Con:} Makes $\delta$ sensitive to timing of default.
+
+\vspace{0.3em}
+\noindent\textbf{Recovery of Treasury Value (RTV):}
+
+\textbf{Definition:} Fraction of equivalent risk-free zero-coupon bond at default time.
+
+\textbf{Formula:} $D(T,T) = 1_{\tau>T} + \delta 1_{\tau \leq T}$ \quad (8.5)
+
+\textbf{Pro:} Makes $\delta$ insensitive to timing of default; simplifies valuation of defaultable claims.
+
+\textbf{Con:} Not how recovery is determined in practice.
+
+\vspace{0.3em}
+\noindent\textbf{Recovery of Market Value (RMV):}
+
+\textbf{Definition:} Fraction of pre-default bond value at default time. $\delta$ = proportional value loss incurred immediately by claimholder.
+
+\textbf{Formula:} $D(T,T) = 1_{\tau>T} + \delta \frac{D(\tau^-, T)}{P(t,T)} 1_{\tau \leq T}$ \quad (8.6)
+
+\textbf{Theory (Duffie-Singleton 1999):} Under reduced-form approach, RMV allows expressing defaultable claim value as EMM expectation at risk-adjusted rate $R_t = r_t + s_t$ (where $s_t$ = credit spread):
+
+$$D(t,T) = \mathbb{E}^Q\left[\exp\left(-\int_t^T (r_u + s_u)\,du\right)\right] \quad \text{(8.7)}$$
+
+\textbf{Pricing implication:} Valuation of defaultable claims uses same tools as yield curve and zero-coupon bond pricing (factor models or HJM framework) for dynamics of $\{r_t\}$ and $\{s_t\}$.
+
+
+
+
+
+\end{document}

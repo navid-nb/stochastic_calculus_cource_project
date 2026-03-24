@@ -1,0 +1,491 @@
+\documentclass[compress]{beamer}
+
+%PACKAGES
+\usepackage{graphicx}
+\graphicspath{{Images/}}
+\usepackage{xcolor}
+\newcommand{\rc}[1]{{\color{red}{#1}}}
+\newcommand{\bc}[1]{{\color{blue}{#1}}}
+\usepackage{amsmath, amssymb}
+\usepackage{bm, bbm}
+\usepackage{caption, subcaption}
+%\usepackage{bibentry, natbib}
+\usepackage{appendix}
+\usepackage{outlines}
+\usepackage{setspace}
+\usepackage{comment}
+\usepackage{multicol, multirow, array}
+\usepackage{tabu}
+\usepackage{algorithm2e, algorithmic}
+\usepackage{float}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage[flushleft]{threeparttable}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=blue,      
+    urlcolor=blue,
+    citecolor=black,
+}
+\pdfstringdefDisableCommands{%
+    \def\translate#1{#1}%
+}
+
+\newcommand\MyBox[2]{
+    \fbox{\lower0.75cm
+        \vbox to 1.7cm{\vfil
+            \hbox to 1.7cm{\hfil\parbox{1.4cm}{#1\\#2}\hfil}
+            \vfil}%
+    }%
+}
+
+\usetheme{Frankfurt}
+\usecolortheme{seahorse}
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{navigation symbols}{}
+
+% Keep plain readable colors
+\setbeamercolor{normal text}{fg=black,bg=white}
+\setbeamercolor{frametitle}{fg=black,bg=white}
+
+% Disable automatic section frames
+\AtBeginSection[]{}
+\AtBeginSubsection[]{}
+
+%TITLE
+\title{MATH 60646 -- Stochastic Calculus \\ Term Project}
+\author{Myriam El Amri \and Navid Namazi Baigi \and Widmaier Volmir Mortune}
+\institute{HEC Montreal}
+\date{Winter 2026}
+
+%----------------------------------------------------------------
+\begin{document}
+%\bibliographystyle{apalike}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Table of Contents}
+    \tableofcontents
+\end{frame}
+
+%================================================================
+% QUESTION 2
+%================================================================
+
+\section{Question 2}
+
+\begin{frame}{Question 2}
+    \textbf{What is the zero-coupon yield curve $y(t,T)$ and how is it related to the instantaneous risk-free rate $r_t$, the instantaneous forward rate $f(t,T)$ and the zero-coupon bond price $P(t,T)$? Describe clearly the economic meaning of each quantity and the relationship between them.}
+\end{frame}
+
+\begin{frame}{Answer 2(a)}
+    {\small
+
+	\vspace{1em}
+    
+	\textbf{1) Zero-coupon yield curve $y(t,T)$:} annualized continuously-compounded return over $[t,T]$.
+	
+	\vspace{1em}
+
+    \textit{Intuition:} the yield curve $y(t,T)$ represents the market-implied cost (interest rate) of borrowing/lending for different maturities $T$ at time $t$.
+    
+	\vspace{1em}
+
+    \textbf{2) Zero-coupon bond price $P(t,T)$:} price at time $t$ of 1 unit paid at $T$.
+    \[
+        P(t,T)=\mathbb{E}^{\mathbb{Q}}\!\left[\exp\!\left(-\int_t^T r_u\,du\right)\middle|\mathcal F_t\right].
+    \]
+    \textit{Intuition:} discount factor from $T$ back to $t$.
+
+    \textbf{Relations with $y$:}
+    \[
+        y(t,T)= -\frac{1}{T-t}\ln P(t,T),
+        \qquad
+        P(t,T)=\exp\!\big(-(T-t)y(t,T)\big).
+    \]
+
+    \vspace{0.4em}}
+\end{frame}
+
+
+\begin{frame}{Answer 2(b)}
+    {\small
+
+	\vspace{1em}
+
+    \textbf{3) Instantaneous forward rate $f(t,T)$:}
+    \[
+        f(t,T)= -\frac{\partial}{\partial T}\ln P(t,T)
+        \quad\Longleftrightarrow\quad
+        P(t,T)=\exp\!\left(-\int_t^T f(t,u)\,du\right).
+    \]
+    \textit{Intuition:} market-implied infinitesimal rate for date $T$ seen at time $t$.
+
+	\vspace{1em}
+
+    \textbf{Relation with $y$:}
+    \[
+        y(t,T)=\frac{1}{T-t}\int_t^T f(t,u)\,du
+    \]
+    }
+
+\end{frame}
+
+\begin{frame}{Answer 2(c)}
+    {\small
+    \vspace{1em}
+
+    \textbf{4) Instantaneous risk-free rate (short rate) $r_0$:}
+    \[
+        r_0=f(0,0)= -\frac{\partial}{\partial T}\ln P(0,0)\Big|_{T=0}
+    \]
+
+	\vspace{1em}
+
+    \textit{Intuition:} current infinitesimal risk-free rate. 
+
+	\vspace{1em}
+
+    \textbf{Relation with $y$ (from/to short rate):}
+    \[
+        r_0=\lim_{T\rightarrow 0} y(0,T)\] }
+\end{frame}
+
+%================================================================
+% QUESTION 3
+%================================================================
+
+\section{Question 3}
+
+\begin{frame}{Question 3}
+    Let $(W_t)_{t \geq 0}$ be a standard Brownian motion under the physical measure $\mathbb{P}$. The short rate $(r_t)_{t \geq 0}$, representing the instantaneous risk-free rate, is assumed to follow the Cox-Ingersoll-Ross (CIR) square-root diffusion:
+    \[
+        dr_t = \kappa^{\mathbb{P}}\left(\theta^{\mathbb{P}} - r_t\right)dt + \sigma\sqrt{r_t}\,dW_t^{\mathbb{P}}, \quad r_0 > 0.
+    \]
+    \begin{itemize}
+        \item[(i)] Why does this model admit a strong solution?
+        \item[(ii)] Do you have constraints on the parameters?
+        \item[(iii)] Can you interpret them?
+        \item[(iv)] What is the distribution of $r_t$?
+        \item[(v)] Describe the main mathematical properties of this short-rate dynamics. Explain why this specification is appropriate for modeling the evolution of the instantaneous rate.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Answer 3 (i): Strong Solution Existence}
+    \small
+    
+    \[
+        dr_t = \kappa^{\mathbb{P}}(\theta^{\mathbb{P}} - r_t)dt + \sigma\sqrt{r_t}\,dW_t^{\mathbb{P}}.
+    \]
+    
+    \vspace{1em}
+    
+    \textbf{Existence of strong solution:} By \textit{Itô's existence theorem}, a strong solution exists if the drift and diffusion coefficients satisfy:
+    
+    \vspace{0.5em}
+    
+    \begin{enumerate}
+        \item \textbf{Lipschitz continuity of drift:} The drift $b(r_t) = \kappa^{\mathbb{P}}(\theta^{\mathbb{P}} - r_t)$ is linear in $r_t$ and hence Lipschitz continuous.
+        
+        \item \textbf{Linear growth of diffusion:} The diffusion coefficient $\sigma(r_t) = \sigma\sqrt{r_t}$ satisfies $|\sigma(r)| \leq C(1 + |r|)$, which is at most linear growth.
+        
+        \item \textbf{Boundary condition at 0:} The \textit{Feller condition} (to be discussed in part ii) ensures that the process does not cross zero and therefore the square root function remains well-defined along sample paths.
+    \end{enumerate}
+    
+    \vspace{1em}
+    
+    These conditions guarantee pathwise uniqueness and the existence of a unique strong $(\mathcal{F}_t)$-adapted solution.
+\end{frame}
+
+\begin{frame}{Answer 3 (ii): Parameter Constraints}
+    \small
+    The key constraint is the \textbf{Feller condition}:
+    \[
+        \boxed{2\kappa^{\mathbb{P}}\theta^{\mathbb{P}} > \sigma^2}
+    \]
+    
+    \vspace{1em}
+    
+    \textbf{Additional (implicit) constraints:}
+    \begin{itemize}
+        \item $\kappa^{\mathbb{P}} > 0$ (mean reversion is attractive, not repulsive)
+        \item $\theta^{\mathbb{P}} > 0$ (long-run mean is positive)
+        \item $\sigma > 0$ (volatility is positive)
+    \end{itemize}
+    
+    \vspace{1em}
+    
+    \textbf{Why Feller?} When the diffusion coefficient $\sigma(r) = \sigma\sqrt{r}$ vanishes at $r = 0$, the natural scale analysis shows that zero is a \textit{reflecting} boundary. The Feller condition ensures that the expected time a Brownian motion spends at zero is infinite, so in practice, if $r_t = 0$ occurs, the process instantly bounces back to positive values. Under the Feller condition, $r_t > 0$ with probability 1 for all $t > 0$.
+\end{frame}
+
+\begin{frame}{Answer 3 (iii): Interpretation of Parameters}
+    \small
+    
+    \begin{enumerate}
+        \item \textbf{$\kappa^{\mathbb{P}}$ (speed of mean reversion):}
+        \vspace{0.3em}
+        The parameter controlling how quickly deviations from $\theta^{\mathbb{P}}$ decay. Large $\kappa^{\mathbb{P}}$ means rapid mean reversion. Small $\kappa^{\mathbb{P}}$ means slow mean reversion (long-lived deviations).
+        
+        \vspace{1em}
+        
+        \item \textbf{$\theta^{\mathbb{P}}$ (long-run mean or equilibrium level):}
+        \vspace{0.3em}
+        The unconditional steady-state level toward which the short rate is attracted. Over a sufficiently long horizon, $\mathbb{E}[r_t] \to \theta^{\mathbb{P}}$.
+        
+        \vspace{1em}
+        
+        \item \textbf{$\sigma$ (diffusion or volatility coefficient):}
+        \vspace{0.3em}
+        Controls the magnitude of random fluctuations. Typical units: $\sqrt{\text{basis points per year}}$. The square-root specification means volatility \emph{decreases} when rates are low and \emph{increases} when rates are high—a realistic feature.
+        \end{enumerate}
+\end{frame}
+
+\begin{frame}{Answer 3 (iv): Distribution of r$_t$}
+    \small
+    
+    The CIR process has no closed-form explicit pdf, but $r_t$ is distributed as a \textbf{scaled non-central chi-square random variable}.
+    
+    \vspace{1em}
+    
+    \textbf{Formal statement:} For $t \geq s$,
+    \[
+        r_t = b_t \chi^2_{\nu}(\lambda_c),
+    \]
+    where
+    \begin{itemize}
+        \item $\chi^2_{\nu}(\lambda_c)$ is a non-central chi-square distribution with $\nu = \frac{4\kappa^{\mathbb{P}}\theta^{\mathbb{P}}}{\sigma^2}$ degrees of freedom
+        \item $\lambda_c = \frac{4\kappa^{\mathbb{P}} r_s e^{-\kappa^{\mathbb{P}}(t-s)}}{\sigma^2(1 - e^{-\kappa^{\mathbb{P}}(t-s)})}$ is the non-centrality parameter
+        \item $b_t = \frac{\sigma^2(1 - e^{-\kappa^{\mathbb{P}}(t-s)})}{4\kappa^{\mathbb{P}}}$ is the scaling factor
+    \end{itemize}
+    
+    \vspace{1em}
+    
+    \textbf{Moments under $\mathbb{P}$:}
+    \begin{itemize}
+        \item $\mathbb{E}^{\mathbb{P}}[r_t \mid r_s] = r_s e^{-\kappa^{\mathbb{P}}(t-s)} + \theta^{\mathbb{P}}(1 - e^{-\kappa^{\mathbb{P}}(t-s)})$
+        \item $\text{Var}^{\mathbb{P}}[r_t \mid r_s] = \frac{\sigma^2}{2\kappa^{\mathbb{P}}}r_s(1 - e^{-\kappa^{\mathbb{P}}(t-s)})e^{-\kappa^{\mathbb{P}}(t-s)} + \frac{\sigma^2\theta^{\mathbb{P}}}{2\kappa^{\mathbb{P}}}(1 - e^{-\kappa^{\mathbb{P}}(t-s)})^2$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Answer 3 (v): Mathematical Properties}
+    \small
+    
+    \begin{enumerate}
+        \item \textbf{Mean Reversion:} The deterministic drift $\kappa^{\mathbb{P}}(\theta^{\mathbb{P}} - r_t)$ pulls the process toward $\theta^{\mathbb{P}}$ at rate $\kappa^{\mathbb{P}}$. If $r_t > \theta^{\mathbb{P}}$, drift is negative (pulling down); if $r_t < \theta^{\mathbb{P}}$, drift is positive (pulling up). This ensures stationarity and prevents unbounded growth or decay.
+        
+        \vspace{1em}
+
+        \item \textbf{Positivity (Feller property):} Under the Feller condition, $r_t > 0$ almost surely for all $t > 0$, even if $r_0 = 0$. This is crucial because negative interest rates are economically undesirable (and historically were forbidden).
+        
+		\vspace{1em}
+
+        \item \textbf{Square-Root Volatility:} The diffusion term $\sigma\sqrt{r_t}\,dW_t^{\mathbb{P}}$ is proportional to $\sqrt{r_t}$. This means:
+        \begin{itemize}
+            \item Volatility is high when $r_t$ is high
+            \item Volatility is low when $r_t$ is low
+            \item Volatility vanishes at $r_t = 0$ (reflecting barrier)
+        \end{itemize}
+        
+        Empirically, short-rate volatility is observed to be correlated with the level of rates, making this a highly realistic feature.
+        
+        \vspace{1em}
+		
+        \item The CIR model admits closed-form bond prices and option prices (expressed in terms of noncentral chi-square distributions), making it practical for valuation and risk management.
+        
+	\end{enumerate}
+\end{frame}
+
+%================================================================
+% QUESTION 4
+%================================================================
+
+\section{Question 4}
+
+\begin{frame}[allowframebreaks]{Question 4}
+    Under the risk-neutral measure $\mathbb{Q}$, the instantaneous risk-free rate is assumed to satisfy
+    \[
+        dr_t = \kappa^{\mathbb{Q}}\left(\theta^{\mathbb{Q}} - r_t\right)dt + \sigma\sqrt{r_t}\,dW_t^{\mathbb{Q}}.
+    \]
+    \begin{itemize}
+        \item[(i)] Derive the link between the parameters $(\kappa^{\mathbb{P}}, \theta^{\mathbb{P}})$ and $(\kappa^{\mathbb{Q}}, \theta^{\mathbb{Q}})$.
+        \item[(ii)] Specify the functional form of the market price of risk that is required to ensure that the process remains of CIR type under $\mathbb{Q}$.
+        \item[(iii)] Prove that the Novikov condition is satisfied in this case.
+        \item[(iv)] Given that time series of the short rate $r$ are not observable under the risk-neutral measure $\mathbb{Q}$, why is it common practice to maintain the same structural specification under $\mathbb{Q}$?
+    \end{itemize}
+\end{frame}
+
+%================================================================
+% QUESTION 5
+%================================================================
+
+\section{Question 5}
+
+\begin{frame}{Question 5}
+    Prove in a general framework that the discounted bond price process is a $\mathbb{Q}$-martingale.
+\end{frame}
+
+\begin{frame}{Answer 5(a) -- Setup And Martingale Definition}
+    {\small
+    Fix maturity $T$ and define the discounted bond price process
+    \[
+        \widetilde P_t(T):=B_t^{-1}P(t,T),
+        \qquad
+        B_t:=\exp\!\left(\int_0^t r_u\,du\right).
+    \]
+    Under $\mathbb Q$, the bond pricing formula is
+    \[
+        P(t,T)=\mathbb E^{\mathbb Q}\!\left[\exp\!\left(-\int_t^T r_u\,du\right)\middle|\mathcal F_t\right].
+    \]
+
+    \textbf{Martingale definition ($(\mathcal F_t)$):} a process $(M_t)$ is a martingale if for all $0\le s\le t$:
+    \begin{itemize}
+        \item[(i)] $M_t$ is $\mathcal F_t$-measurable,
+        \item[(ii)] $\mathbb E^{\mathbb Q}[|M_t|]<\infty$ (integrable),
+        \item[(iii)] $\mathbb E^{\mathbb Q}[M_t\mid \mathcal F_s]=M_s$ (martingale property).
+    \end{itemize}
+    }
+\end{frame}
+
+\begin{frame}{Answer 5(b) -- Verification Of All Properties}
+    {\small
+    Using the pricing formula,
+    \begin{align*}
+        \widetilde P_t(T)
+        &\overset{\text{def. }\widetilde P}{=}
+        e^{-\int_0^t r_u\,du}\,\mathbb E^{\mathbb Q}\!\left[e^{-\int_t^T r_u\,du}\middle|\mathcal F_t\right]\\
+        &\overset{\substack{\text{EC6}}}{=}\mathbb E^{\mathbb Q}\!\left[e^{-\int_0^t r_u\,du}e^{-\int_t^T r_u\,du}\middle|\mathcal F_t\right]\\
+        &\overset{\text{}}{=} \mathbb E^{\mathbb Q}\!\left[e^{-\int_0^T r_u\,du}\middle|\mathcal F_t\right].
+    \end{align*}
+    Let $X:=e^{-\int_0^T r_u\,du}$ (it is nonnegative and integrable).
+
+    \textbf{(i)} $\widetilde P_t(T)=\mathbb E^{\mathbb Q}[X\mid\mathcal F_t]$ is $\mathcal F_t$-measurable (need proof?).
+
+    \textbf{(ii) Integrable:}
+    \begin{align*}
+        \mathbb E^{\mathbb Q}[|\widetilde P_t(T)|]
+        &\overset{\text{def. of }\widetilde P_t(T)}{=}
+        \mathbb E^{\mathbb Q}\!\left[\,\big|\mathbb E^{\mathbb Q}[X\mid\mathcal F_t]\big|\,\right]\\
+        &\overset{\text{Jensen}}{\le} 
+		\mathbb E^{\mathbb Q}\!\left[\,\mathbb E^{\mathbb Q}[|X|\mid\mathcal F_t]\,\right]\\
+		&\overset{\text{EC5}}{=}\mathbb E^{\mathbb Q}[|X|]
+        <\infty.
+    \end{align*}
+
+	% C6 If Y is G-measurable, then EP[XY | G] = Y EP[X | G]
+	
+    }
+\end{frame}
+
+
+\begin{frame}{Answer 5(c) -- Verification Of All Properties}
+    {\small
+    
+
+    \textbf{(iii) Conditional expectation property:} for $0\le s\le t\le T$,
+    \begin{align*}
+        \mathbb E^{\mathbb Q}[\widetilde P_t(T)\mid\mathcal F_s]
+        &\overset{\text{def. of }\widetilde P_t(T)}{=}
+        \mathbb E^{\mathbb Q}\!\left[\mathbb E^{\mathbb Q}[X\mid\mathcal F_t]\middle|\mathcal F_s\right]\\
+        &\overset{\text{EC3}}{=}
+        \mathbb E^{\mathbb Q}[X\mid\mathcal F_s]\\
+        &\overset{\text{def. of }\widetilde P_s(T)}{=}
+        \widetilde P_s(T).
+    \end{align*}
+
+    Therefore $(\widetilde P_t(T))_{0\le t\le T}$ is a $\mathbb Q$-martingale.
+
+	\vspace{4em}
+
+	
+	\textcolor{blue}{EC3: if $\mathcal G_1\subseteq \mathcal G_2$ are $\sigma$-algebras, then $\mathbb E^{\mathbb P}[\mathbb E^{\mathbb P}[X\mid\mathcal G_2]\mid\mathcal G_1]= \mathbb E^{\mathbb P}[X\mid\mathcal G_1]$}.
+	
+	\textcolor{blue}{EC5: $\mathbb E^{\mathbb P}[\mathbb E^{\mathbb P}[X\mid\mathcal G]]= \mathbb E^{\mathbb P}[X]$}.
+
+	\textcolor{blue}{EC6: if $Y$ is $\mathcal G$-measurable, then $\mathbb E^{\mathbb P}[XY\mid\mathcal G]=Y\,\mathbb E^{\mathbb P}[X\mid\mathcal G]$}.
+	
+	\textcolor{blue}{Jensen used as: 
+$|\mathbb{E}^{\mathbb{Q}}[X \mid \mathcal{F}_t]| \leq \mathbb{E}^{\mathbb{Q}}[|X| \mid \mathcal{F}_t]$
+}
+    }
+\end{frame}
+
+%================================================================
+% QUESTION 6
+%================================================================
+
+\section{Question 6}
+
+\begin{frame}[allowframebreaks]{Question 6}
+     The time-$t$ price of a zero-coupon bond maturing at $T$ is
+    \[
+        P(t, T) = \mathbb{E}^{\mathbb{Q}}\left[\exp\left(-\int_t^T r_s\,ds\right)\bigg|\mathcal{F}_t\right].
+    \]
+    \textbf{Part (i):}Prove that in the CIR model, the bond price admits the log-affine representation $\log P(t,T) = a(t,T) - b(t,T)\,r_t$ where 
+    \begin{align*}
+        b(t,T) &= \frac{2(e^{\gamma\tau}-1)}{(\gamma+\kappa^{\mathbb{Q}})(e^{\gamma\tau}-1)+2\gamma}, \\
+        a(t,T) &= \frac{2\kappa^{\mathbb{Q}}\theta^{\mathbb{Q}}}{\sigma^2}
+        \log\left(\frac{2\gamma\, e^{(\kappa^{\mathbb{Q}}+\gamma)\tau/2}}{(\gamma+\kappa^{\mathbb{Q}})(e^{\gamma\tau}-1)+2\gamma}\right)
+    \end{align*}
+    with $\tau = T-t$ and $\gamma = \sqrt{(\kappa^{\mathbb{Q}})^2 + 2\sigma^2}$.
+    
+    \vspace{0.4em}
+    \textbf{Part (ii):} In the specific context of this model, derive the stochastic differential equation satisfied by the zero-coupon bond price $P(t,T)$.
+\end{frame}
+
+%================================================================
+% QUESTION 7
+%================================================================
+
+\section{Question 7}
+
+\begin{frame}[allowframebreaks]{Question 7}
+    The limited number of risk-neutral parameters $(\kappa^{\mathbb{Q}}, \theta^{\mathbb{Q}}, \sigma)$ generally does not allow the model to match exactly the observed term structure of interest rates at time $t=0$. As a consequence, the model may fail to reproduce the initial yield curve exactly. A common remedy consists in extending the model by replacing the constant long-run mean $\theta^{\mathbb{Q}}$ with a deterministic function of time, say $\theta_t^{\mathbb{Q}}$.
+    
+    \[
+        dr_t = \kappa^{\mathbb{Q}}\left(\theta^{\mathbb{Q}}_t - r_t\right)dt + \sigma\sqrt{r_t}\,dW_t^{\mathbb{Q}}, \quad r_0 > 0.
+    \]
+    
+    How can you choose $\theta_t^{\mathbb{Q}}$ so that you are fully consistent with the observed yield curve $y(0,T)$ at time $t=0$?
+
+    You can retrieve the data for the zero-coupon yield curves from the Federal Reserve Economic Data (FRED) database: FRED. Provide a numerical implementation of the model and present the results with relevant graphs for a given day (each figure must include a detailed figure note providing all technical information necessary for proper interpretation of its content). How do you get parameter values for $\kappa$ and $\sigma$?
+\end{frame}
+
+%================================================================
+% QUESTION 8
+%================================================================
+
+\section{Question 8}
+
+\begin{frame}{Question 8}
+    \begin{itemize}
+        \item[(i)] Explain what is an interest rate swap (IRS).
+        \item[(ii)] Show that the time-$t$ swap rate is a function of the zero-coupon bond prices at time $t$.
+    \end{itemize}
+\end{frame}
+
+%================================================================
+% QUESTION 9
+%================================================================
+
+\section{Question 9}
+
+\begin{frame}{Question 9}
+    \begin{itemize}
+        \item[(i)] Explain what is a swaption.
+        \item[(ii)] Give the pricing formula of a swaption (with an explanation on how you obtain it).
+    \end{itemize}
+\end{frame}
+
+%================================================================
+% END
+%================================================================
+
+\begin{frame}[allowframebreaks]{References}
+    References will be added in the final version.
+\end{frame}
+
+\end{document}
